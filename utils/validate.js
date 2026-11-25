@@ -1,4 +1,4 @@
-const { TYPE_OBJECT, TYPE_STRING } = require("./constants");
+const { TYPE_OBJECT, TYPE_STRING, GET_METHOD } = require("./constants");
 const { NullError, InvalidType, EmptyError } = require("./error");
 
 const validatePayload = (payload) => {
@@ -46,6 +46,22 @@ const validateJwsPayload = (payload) => {
   if (!payload) NullError("payload");
 
   if (typeof payload !== TYPE_STRING) InvalidType("payload", TYPE_STRING);
+};
+
+const validateNonEmptyString = (value, name) => {
+  if (!value) NullError(name);
+
+  if (typeof value !== TYPE_STRING) InvalidType(name, TYPE_STRING);
+};
+
+exports.validateGenerateDigestParams = ({ httpMethod, requestUri, payload, apiSecret }) => {
+  validateNonEmptyString(httpMethod, "http method");
+  validateNonEmptyString(apiSecret, "API secret");
+  if (httpMethod.toUpperCase() === GET_METHOD) {
+    validateNonEmptyString(requestUri, "request URI");
+  } else {
+    validateNonEmptyString(payload, "payload");
+  }
 };
 
 exports.validateGenerateJWEParams = ({ payload, publicKey }) => {
