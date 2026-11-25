@@ -54,9 +54,17 @@ const validateNonEmptyString = (value, name) => {
   if (typeof value !== TYPE_STRING) InvalidType(name, TYPE_STRING);
 };
 
-exports.validateGenerateDigestParams = ({ httpMethod, requestUri, payload, apiSecret }) => {
+const BASE64_PATTERN = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+
+const validateSalt = (salt) => {
+  validateNonEmptyString(salt, "salt");
+
+  if (!BASE64_PATTERN.test(salt)) InvalidType("Salt", "Base64 encoded string");
+};
+
+exports.validateGenerateDigestParams = ({ httpMethod, requestUri, payload, salt }) => {
   validateNonEmptyString(httpMethod, "http method");
-  validateNonEmptyString(apiSecret, "API secret");
+  validateSalt(salt);
   if (httpMethod.toUpperCase() === GET_METHOD) {
     validateNonEmptyString(requestUri, "request URI");
   } else {
