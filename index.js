@@ -1,7 +1,12 @@
 const generateJWE = require("./src/generateJWE");
 const generateJWS = require("./src/generateJWS");
 const generateJWEAndJWS = require("./src/generateJWEAndJWS");
-const { validateGenerateJWEParams, validateGenerateJWSParams } = require("./utils/validate");
+const generateDigest = require("./src/generateDigest");
+const {
+  validateGenerateJWEParams,
+  validateGenerateJWSParams,
+  validateGenerateDigestParams,
+} = require("./utils/validate");
 
 exports.generateJWE = async params => {
   validateGenerateJWEParams(params);
@@ -14,3 +19,8 @@ exports.generateJWS = async params => {
 };
 
 exports.generateJWEAndJWS = generateJWEAndJWS;
+
+exports.generateDigest = async params => {
+  validateGenerateDigestParams(params);
+  return generateDigest(params);
+};
